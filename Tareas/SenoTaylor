@@ -1,0 +1,11 @@
+A=int(input())
+X=(A*3.1416)/180
+N=int(input())
+S=0
+for i in range(0, N+1,1):
+    F=1
+    M=2*i+1
+    for K in range(1,M+1, 1):
+        F=F*K
+    S=S+((((-1)**i)*(X)**(2*i+1))/F)
+print(S)
