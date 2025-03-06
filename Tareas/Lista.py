@@ -6,4 +6,4 @@ if N>2:
 elif N==2:
     print(2)
 else:
-    print("Deje la maricada")
+    print("Valor invalido")
