@@ -14,7 +14,6 @@ else:
             i=i+1
     else:
         MCD=N
-
 if N%2==0 and D%2==0:
     print(MCD)
 elif N%2==1 and D%2==1:
