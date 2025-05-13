@@ -1,0 +1,17 @@
+A=[]
+L=int(input("Ingrese la cantidad de filas en la matriz: "))
+C=int(input("Ingrese la cantidad de columnas: "))
+for i in range(L):
+    F = []
+    for x in range(C):
+        S=int(input(f"Ingrese el numero en la posición {i+1}.{x+1}: "))
+        F.append(S)
+    A.append(F)
+print(f"La matriz 'A' es {A}")
+B=[]
+for x in range(C):
+    F=[]
+    for i in range(L):
+        F.append(A[i][x])
+    B.append(F)
+print(f"Y su matriz transpuesta es {B}")
