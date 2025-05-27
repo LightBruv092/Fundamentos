@@ -26,6 +26,6 @@ while True:
         if C.right < AN:
             C.x+=V
     P.fill((30,30,30))
-    pygame.draw.rect(P,(0,255,0),C)
+    pygame.draw.rect(P,(128,0,128),C)
     pygame.display.flip()
     clock.tick(60)
