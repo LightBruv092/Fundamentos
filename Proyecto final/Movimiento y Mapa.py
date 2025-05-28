@@ -7,12 +7,23 @@ P = pygame.display.set_mode((AN, AL))
 pygame.display.set_caption("Cámara sigue al jugador")
 
 clock = pygame.time.Clock()
-C = pygame.Rect(1600, 1200, 50, 50)  # Jugador empieza en el centro del mapa
+fondo = pygame.image.load("pixel_image_proportional_3200x2400.png").convert()
+mapa_ancho, mapa_alto = fondo.get_size()
+
+# Crear jugador centrado en el mapa
+cuadro_ancho, cuadro_alto = 50, 50
+C = pygame.Rect(
+    mapa_ancho // 2 - cuadro_ancho // 2,
+    mapa_alto // 2 - cuadro_alto // 2,
+    cuadro_ancho,
+    cuadro_alto
+)
 V = 5
 
 # Cargar imagen del mapa (fondo)
 fondo = pygame.image.load("pixel_image_proportional_3200x2400.png").convert()
 mapa_ancho, mapa_alto = fondo.get_size()
+
 
 while True:
     for E in pygame.event.get():
