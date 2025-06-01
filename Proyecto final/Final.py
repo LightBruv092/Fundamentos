@@ -1,6 +1,7 @@
 import pygame
 import sys
 import math
+import random
 
 pygame.init()
 AN, AL = 800, 600
@@ -37,7 +38,8 @@ vida = 100
 ultimo_daño = pygame.time.get_ticks()
 
 def crear_enemigo():
-    x, y = 100, 100
+    x = random.randint(0, mapa_ancho - cuadro_ancho)
+    y = random.randint(0, mapa_alto - cuadro_alto)
     enemigo = pygame.Rect(x, y, cuadro_ancho, cuadro_alto)
     ENEMIGOS.append(enemigo)
 
@@ -72,9 +74,28 @@ while True:
         if E.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        elif E.type == pygame.MOUSEBUTTONDOWN and estado == "menu":
-            if boton_rect.collidepoint(E.pos):
-                estado = "jugando"
+        elif E.type == pygame.MOUSEBUTTONDOWN:
+            if estado == "menu":
+                if boton_rect.collidepoint(E.pos):
+                    estado = "jugando"
+                boton_salir_rect = pygame.Rect(AN // 2 - 100, AL // 2 + 50, 200, 50)
+                if boton_salir_rect.collidepoint(E.pos):
+                    pygame.quit()
+                    sys.exit()
+            elif estado == "game_over":
+                boton_reiniciar_rect = pygame.Rect(AN // 2 - 100, AL // 2 - 25, 200, 50)
+                boton_salir_rect = pygame.Rect(AN // 2 - 100, AL // 2 + 50, 200, 50)
+                if boton_reiniciar_rect.collidepoint(E.pos):
+                    # Reiniciar variables para empezar de nuevo
+                    ENEMIGOS.clear()
+                    BITS.clear()
+                    vida = 100
+                    C.x = mapa_ancho // 2 - cuadro_ancho // 2
+                    C.y = mapa_alto // 2 - cuadro_alto // 2
+                    estado = "jugando"
+                elif boton_salir_rect.collidepoint(E.pos):
+                    pygame.quit()
+                    sys.exit()
 
     if estado == "menu":
         P.fill((20, 20, 20))
@@ -177,6 +198,10 @@ while True:
             vida = max(vida, 0)
             ultimo_daño = tiempo_actual
 
+        # Cuando la vida llega a 0 cambia el estado a game_over
+        if vida <= 0:
+            estado = "game_over"
+
         barra_anchura = 200
         barra_altura = 20
         barra_surface = pygame.Surface((barra_anchura, barra_altura))
@@ -202,45 +227,20 @@ while True:
 
         P.blit(minimapa, (AN - minimapa_ancho - 10, 10))
 
-        # Aquí detectamos si la vida llega a 0 para pasar a "game_over"
-        if vida <= 0:
-            estado = "game_over"
-
     elif estado == "game_over":
         P.fill((20, 20, 20))
-
-        texto_fin = fuente.render("¡Has perdido!", True, (255, 255, 255))
-        texto_fin_rect = texto_fin.get_rect(center=(AN // 2, AL // 2 - 100))
-        P.blit(texto_fin, texto_fin_rect)
-
         boton_reiniciar_rect = pygame.Rect(AN // 2 - 100, AL // 2 - 25, 200, 50)
+        boton_salir_rect = pygame.Rect(AN // 2 - 100, AL // 2 + 50, 200, 50)
+
         pygame.draw.rect(P, (0, 100, 200), boton_reiniciar_rect)
         texto_reiniciar = fuente.render("Volver a jugar", True, (255, 255, 255))
         texto_reiniciar_rect = texto_reiniciar.get_rect(center=boton_reiniciar_rect.center)
         P.blit(texto_reiniciar, texto_reiniciar_rect)
 
-        boton_salir_rect = pygame.Rect(AN // 2 - 100, AL // 2 + 50, 200, 50)
         pygame.draw.rect(P, (200, 0, 0), boton_salir_rect)
         texto_salir = fuente.render("Salir", True, (255, 255, 255))
         texto_salir_rect = texto_salir.get_rect(center=boton_salir_rect.center)
         P.blit(texto_salir, texto_salir_rect)
 
-        if pygame.mouse.get_pressed()[0]:
-            mouse_pos = pygame.mouse.get_pos()
-            if boton_reiniciar_rect.collidepoint(mouse_pos):
-                # Reiniciar el juego
-                vida = 100
-                ENEMIGOS.clear()
-                BITS.clear()
-                C.x = mapa_ancho // 2 - cuadro_ancho // 2
-                C.y = mapa_alto // 2 - cuadro_alto // 2
-                ULTIMA_CREACION = pygame.time.get_ticks()
-                TIEMPO_ULTIMO_BIT = pygame.time.get_ticks()
-                estado = "jugando"
-                pygame.time.delay(200)  # Evitar doble clic
-            elif boton_salir_rect.collidepoint(mouse_pos):
-                pygame.quit()
-                sys.exit()
-
-    pygame.display.flip()
+    pygame.display.update()
     clock.tick(60)
